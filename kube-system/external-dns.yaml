@@ -1,0 +1,34 @@
+---
+apiVersion: 'helm.fluxcd.io/v1'
+kind: 'HelmRelease'
+metadata:
+  annotations:
+    filter.fluxcd.io/chart-image: 'semver:~0'
+    fluxcd.io/automated: 'true'
+  name: 'external-dns'
+  namespace: 'kube-system'
+spec:
+  chart:
+    name: 'external-dns'
+    repository: 'https://charts.bitnami.com/bitnami'
+    version: '3.4.8'
+  releaseName: 'external-dns'
+  values:
+    aws:
+      region: 'ap-northeast-1'
+    domainFilters:
+      - 'cwgv.org.tw'
+    image:
+      repository: 'bitnami/external-dns'
+      tag: '0.7.4'
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    policy: 'sync'
+    provider: 'aws'
+    #zoneIdFilters:
+    #  - 'Z8WQJGKO99WMI'
+  valuesFrom:
+    - secretKeyRef:
+        name: 'external-dns-aws'

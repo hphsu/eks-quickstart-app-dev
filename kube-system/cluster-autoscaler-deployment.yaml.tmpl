@@ -1,46 +1,55 @@
----
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
 metadata:
   name: cluster-autoscaler
   namespace: kube-system
-  labels:
-    app: cluster-autoscaler
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: cluster-autoscaler
-  template:
-    metadata:
-      labels:
-        app: cluster-autoscaler
-    spec:
-      serviceAccountName: cluster-autoscaler
-      containers:
-        - image: k8s.gcr.io/cluster-autoscaler:v1.12.3
-          name: cluster-autoscaler
-          resources:
-            limits:
-              cpu: 100m
-              memory: 300Mi
-            requests:
-              cpu: 100m
-              memory: 300Mi
-          command:
-            - ./cluster-autoscaler
-            - --v=4
-            - --stderrthreshold=info
-            - --cloud-provider=aws
-            - --skip-nodes-with-local-storage=false
-            - --expander=least-waste
-            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/{{ .ClusterName }}
-          volumeMounts:
-            - name: ssl-certs
-              mountPath: /etc/ssl/certs/ca-certificates.crt
-              readOnly: true
-          imagePullPolicy: "Always"
-      volumes:
-        - name: ssl-certs
-          hostPath:
-            path: "/etc/ssl/certs/ca-bundle.crt"
+  releaseName: cluster-autoscaler
+  targetNamespace: kube-system
+  chart:
+    repository: https://kubernetes.github.io/autoscaler
+    name: cluster-autoscaler-chart
+    version: 1.0.4
+  values:
+    podAnnotations:
+      "prometheus.io/scrape": "true"
+      "prometheus.io/port": "8085"
+      "cluster-autoscaler.kubernetes.io/safe-to-evict": "false"
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "300Mi"
+      limits:
+        cpu: "1000m"
+        memory: "512Mi"
+    image:
+      repository: "k8s.gcr.io/autoscaling/cluster-autoscaler"
+      tag: "v1.17.3"
+    priorityClassName: "system-cluster-critical"
+    awsRegion: "{{ .Region }}"
+    fullnameOverride: "cluster-autoscaler"
+    autoDiscovery:
+      clusterName: {{ .ClusterName}}
+    extraArgs:
+      "node-group-auto-discovery": "asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/{{ .ClusterName}}"
+      "scale-down-utilization-threshold": "0.8"
+      "scale-down-unneeded-time": "2m"
+      "skip-nodes-with-local-storage": "false"
+      "skip-nodes-with-system-pods": "false"
+      "expander": "priority"
+      "cloud-provider": "aws"
+    rbac:
+      create: true
+      pspEnabled: true
+    expanderPriorities:
+      priorities: |-
+        10:
+          - .*on-demand-medium.*
+        20:
+          - .*on-demand-large.*
+        30:
+          - .*-nodegroup-spot-medium.*
+        40:
+          - .*-nodegroup-spot-large.*
+        50:
+          - .*-nodegroup-spot-r5-large.*

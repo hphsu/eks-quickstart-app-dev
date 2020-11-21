@@ -1,0 +1,18 @@
+---
+apiVersion: 'helm.fluxcd.io/v1'
+kind: 'HelmRelease'
+metadata:
+  annotations:
+    filter.fluxcd.io/chart-image: 'semver:~0'
+    fluxcd.io/automated: 'true'
+  name: 'external-dns'
+  namespace: 'kube-system'
+spec:
+  chart:
+    name: 'aws-load-balancer-controller'
+    repository: 'https://aws.github.io/eks-charts'
+    version: '0.1.1'
+  releaseName: 'aws-load-balancer-controller'
+  values:
+    aws:
+      region: 'ap-northeast-1'
