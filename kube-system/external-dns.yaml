@@ -20,6 +20,7 @@ spec:
     #domainFilters:
     #  - 'cwgv.org.tw'
     txtOwnerId: 'eks-cluster'
+    logLevel: debug
     rbac:
       create: true
       ## Service Account for pods
