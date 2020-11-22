@@ -17,9 +17,24 @@ spec:
   values:
     aws:
       region: 'ap-northeast-1'
-      assumeRoleArn: 'arn:aws:iam::594348282413:policy/CwgvRoute53ChangeRecord'
     #domainFilters:
     #  - 'cwgv.org.tw'
+    rbac:
+      create: true
+      ## Service Account for pods
+      ## https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+      ##
+      serviceAccountName: external-dns
+      ## Annotations for the Service Account
+      ##
+      serviceAccountAnnotations:
+        eks.amazonaws.com/role-arn='arn:aws:iam::594348282413:policy/CwgvRoute53ChangeRecord'
+      ## RBAC API version
+      ##
+      apiVersion: v1beta1
+      ## Podsecuritypolicy
+      ##
+      pspEnabled: false
     image:
       repository: 'bitnami/external-dns'
       tag: '0.7.4'
