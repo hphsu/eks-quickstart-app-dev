@@ -1,3 +1,4 @@
+# https://artifacthub.io/packages/helm/bitnami/external-dns
 ---
 apiVersion: 'helm.fluxcd.io/v1'
 kind: 'HelmRelease'
@@ -29,6 +30,6 @@ spec:
     provider: 'aws'
     #zoneIdFilters:
     #  - 'Z8WQJGKO99WMI'
-  valuesFrom:
-    - secretKeyRef:
-        name: 'external-dns-aws'
+#  valuesFrom:
+#    - secretKeyRef:
+#        name: 'external-dns-aws'

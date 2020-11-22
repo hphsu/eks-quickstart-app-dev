@@ -9,7 +9,7 @@ spec:
   chart:
     repository: https://kubernetes.github.io/autoscaler
     name: cluster-autoscaler-chart
-    version: 1.0.4
+    version: 1.1.1
   values:
     podAnnotations:
       "prometheus.io/scrape": "true"
@@ -42,7 +42,6 @@ spec:
       create: true
       pspEnabled: true
     expanderPriorities:
-      priorities: |-
         10:
           - .*on-demand-medium.*
         20:
