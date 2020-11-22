@@ -17,8 +17,9 @@ spec:
   values:
     aws:
       region: 'ap-northeast-1'
-    domainFilters:
-      - 'cwgv.org.tw'
+      assumeRoleArn: 'arn:aws:iam::594348282413:policy/CwgvRoute53ChangeRecord'
+    #domainFilters:
+    #  - 'cwgv.org.tw'
     image:
       repository: 'bitnami/external-dns'
       tag: '0.7.4'
