@@ -19,7 +19,7 @@ spec:
       region: 'ap-northeast-1'
     #domainFilters:
     #  - 'cwgv.org.tw'
-    txtOwnerId: 'my-hostedzone-identifier'
+    txtOwnerId: 'eks-cluster'
     rbac:
       create: true
       ## Service Account for pods
