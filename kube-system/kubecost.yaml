@@ -1,0 +1,17 @@
+# https://artifacthub.io/packages/helm/bitnami/external-dns
+---
+apiVersion: 'helm.fluxcd.io/v1'
+kind: 'HelmRelease'
+metadata:
+  annotations:
+    filter.fluxcd.io/chart-image: 'semver:~0'
+    fluxcd.io/automated: 'true'
+  name: 'kubecost'
+  namespace: 'kube-system'
+spec:
+  chart:
+    name: 'cost-analyzer'
+    repository: 'https://kubecost.github.io/cost-analyzer/'
+    version: '1.69.0'
+  releaseName: 'kubecost'
+  values:
