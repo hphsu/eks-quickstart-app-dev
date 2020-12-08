@@ -14,4 +14,3 @@ spec:
     repository: 'https://kubecost.github.io/cost-analyzer/'
     version: '1.69.0'
   releaseName: 'kubecost'
-  values:
